@@ -14,7 +14,7 @@ createConnection()
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
-    app.use('/auth', authRoutes);
+    app.use("/auth", authRoutes);
 
     app.listen(PORT, () => {
       console.log(`Server listening on ${PORT}.`);

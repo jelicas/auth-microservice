@@ -1,7 +1,8 @@
 import { RequestHandler } from "express";
 import { hash, verify } from "argon2";
 
-import { User } from "../entity/User";
+import { User } from "../entity/user";
+import { util } from "../util/util";
 
 interface IAuthController {
   logIn: RequestHandler;
@@ -24,12 +25,13 @@ export const AuthController: IAuthController = {
           .send({ message: "User with that email does not exist" });
       }
 
-      console.log(user.password);
       if (!(await verify(user.password, password))) {
         return res.status(404).send({ message: "Wrong password" });
       }
 
-      return res.status(200).send({ token: "todo" });
+      const accessToken = util.createAccessToken(user);
+
+      return res.status(200).send({ token: accessToken });
     } catch (error) {
       return res
         .status(error.status || 500)
