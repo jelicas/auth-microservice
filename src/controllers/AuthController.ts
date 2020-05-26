@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import { RequestHandler } from "express";
 import { hash, verify } from "argon2";
 
@@ -30,8 +32,16 @@ export const AuthController: IAuthController = {
       }
 
       const accessToken = util.createAccessToken(user);
+      const refreshToken = util.createRefreshToken(user);
 
-      return res.status(200).send({ token: accessToken });
+      const cookieKey = process.env.JWT_REFRESH_TOKEN_COOKIE_KEY!;
+
+      return res
+        .status(200)
+        .cookie(cookieKey, refreshToken, {
+          httpOnly: true,
+        })
+        .send({ accessToken });
     } catch (error) {
       return res
         .status(error.status || 500)
