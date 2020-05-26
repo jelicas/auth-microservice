@@ -7,4 +7,6 @@ authRoutes.post('/login', AuthController.logIn);
 
 authRoutes.post('/register', AuthController.register);
 
+authRoutes.post('/refresh', AuthController.refresh);
+
 export { authRoutes };
