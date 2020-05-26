@@ -1,11 +1,11 @@
 import "dotenv/config";
 
 import { RequestHandler } from "express";
-import { hash } from "argon2";
+import { hash, verify } from "argon2";
 
 import { User } from "../entity/user";
 import { util } from "../util/util";
-import { verify } from "jsonwebtoken";
+import { verify as verifyJWT } from "jsonwebtoken";
 
 interface IAuthController {
   logIn: RequestHandler;
@@ -78,13 +78,11 @@ export const AuthController: IAuthController = {
       const cookieKey = process.env.JWT_REFRESH_TOKEN_COOKIE_KEY!;
       const refreshSecret = process.env.JWT_REFRESH_TOKEN_SECRET!;
 
-      console.log(req.cookies);
-
       let refreshToken = req.cookies[cookieKey];
       let payload: any = null;
 
       try {
-        payload = verify(refreshToken, refreshSecret);
+        payload = verifyJWT(refreshToken, refreshSecret);
       } catch (error) {
         return res.status(401).send({ message: "Token invalid" });
       }
